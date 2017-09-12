@@ -1,0 +1,9 @@
+section.banner {
+    height: 450px;
+    background: url(../image/slider/slider-06.jpg);
+}
+.mega-menu .menu-links .active{
+	    color: #00a9da;	
+}
+.pad-135-t{padding-top: 135px;}
+.pad-60{padding: 180px 60px 120px}
