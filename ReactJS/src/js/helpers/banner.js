@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
-import 'custom_modules/css/plugins-css.css';
-import 'custom_modules/css/mega-menu/mega_menu.css';
-import 'custom_modules/css/default.css';
-import 'custom_modules/css/style.css';
-import 'custom_modules/css/responsive.css';
-import 'custom_modules/css/custom.css';
+import '../../custom_modules/css/plugins-css.css';
+import '../../custom_modules/css/mega-menu/mega_menu.css';
+import '../../custom_modules/css/default.css';
+import '../../custom_modules/css/style.css';
+import '../../custom_modules/css/responsive.css';
+import '../../custom_modules/css/custom.css';
 export class Banner extends Component {
   render () {
     return (
@@ -13,7 +13,7 @@ export class Banner extends Component {
            <div className="owl-carousel-1">
              <div className="item">
                <div className="slider-contents container slide-1 text-center">
-                 <h2 className="text-white text-uppercase">You can do it</h2>
+                 <h2 className="text-white text-uppercase">How you can become a mobile app developer ?</h2>
                  <p className="text-white">We are a creative company, who works with passion and love</p>
                  <a href="" className="button"><span>Upcoming Events</span> <i className="fa fa-calendar" /></a>
                  <a href="" className="button button-white"><span>Discover more</span> <i className="fa fa-eye" /></a>

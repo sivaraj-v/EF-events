@@ -5,17 +5,22 @@ import { Route, BrowserRouter, NavLink, Redirect, Switch } from 'react-router-do
 import Login from './Login'
 import Home from './Home'
 import Dashboard from './protected/Dashboard'
+import Schedule from './protected/Schedule'
+import contact from './protected/contact'
 import {Footer} from '../helpers/Footer.js'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
-import 'custom_modules/css/plugins-css.css';
-import 'custom_modules/css/mega-menu/mega_menu.css';
-import 'custom_modules/css/default.css';
-import 'custom_modules/css/style.css';
-import 'custom_modules/css/responsive.css';
-import 'custom_modules/css/custom.css';
-import 'custom_modules/css/font-awesome-4.7.0/css/font-awesome.css';
+import '../../custom_modules/css/plugins-css.css';
+import '../../custom_modules/css/mega-menu/mega_menu.css';
+import '../../custom_modules/css/default.css';
+import '../../custom_modules/css/style.css';
+import '../../custom_modules/css/responsive.css';
+import '../../custom_modules/css/custom.css';
+import '../../custom_modules/css/font-awesome-4.7.0/css/font-awesome.css';
 import 'bootstrap/dist/js/bootstrap.js';
+import { connect } from 'react-redux';
+import {  activateGeod, closeGeod, userName } from '../../redux';
+
 function PrivateRoute ({component: Component, authed,location,...rest}) {
   return (
     <Route
@@ -27,6 +32,7 @@ function PrivateRoute ({component: Component, authed,location,...rest}) {
   )
 }
 function PublicRoute ({component: Component, authed,location, ...rest}) {
+  debugger;
   return (
     <Route
       {...rest}
@@ -36,8 +42,16 @@ function PublicRoute ({component: Component, authed,location, ...rest}) {
     />
   )
 }
-
-export default class App extends Component {
+function validateUser(checkData){
+    if(checkData.authed === false && checkData.loading === false){
+      window.location = "https://www.google.co.in";
+    }else if(checkData.loading === true && checkData.authed === false){
+      return true;
+    } else if(checkData.loading === true && checkData.authed === true){
+      return false;
+    }
+}
+export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,25 +59,12 @@ export default class App extends Component {
       loading: true,
       location: window.location.pathname
     }
-    
   }
   componentDidMount () {
     var self = this;
     axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
-    // axios.get('http://localhost/AD/AD.php',{"user":56789})
-    // .then(function (response) {
-    //   self.setState({
-    //     authed: true,
-    //     loading: false,
-    //   })
-    // })
-    // .catch(function (error) {
-    //    self.setState({
-    //       authed: false,
-    //       loading: false
-    //     })
-    // });
-    var dataUser = {"user":56789};
+    //console.log(this);
+    var dataUser = {"user": this.props.username};
     axios.post('http://localhost/AD/AD.php', dataUser )
     .then(function (response) {
       var data = response.data.valid;
@@ -88,6 +89,7 @@ export default class App extends Component {
          loading: false
        })
     });
+
   }
 
   componentWillUnmount () {
@@ -95,17 +97,26 @@ export default class App extends Component {
   }
 
   componentWillReceiveProps() {
-    debugger;
+   // debugger;
   }
 
   render() {
-    return this.state.loading === true ? 
+    return validateUser(this.state) === true ? 
     <div id="preloader">
         <div className="clear-loading"><img id="logo_img" src={require('../../image/loader_ef_logo.png')} alt="logo" /></div>
         <div className="clear-loading loading-effect"> <span></span> </div>
     </div>
      : (
       <div>
+     {/* <h1>{this.props.geod.user || 'Working'}</h1>
+              {this.props.geod.user ?
+                <button onClick={this.props.closeGeod}>
+                  Exit Geod
+                </button> :
+                <button onClick={() => this.props.activateGeod({ user: 12345 })}>
+                  Click Me!
+                </button>
+             }*/}
         <BrowserRouter {...this.props}>
         <div>
             <header id="header" className="header">
@@ -123,9 +134,9 @@ export default class App extends Component {
                     <div id="navbar" className="navbar-collapse collapse ">
                       <ul className="nav navbar-nav navbar-right menu-links">
                         <li><NavLink  exact to="/"><i className="fa fa-home" /> Home </NavLink></li>
-                        <li><NavLink  to="/dashboard"><i className="fa fa-bullhorn fa-indicator" /> Speaker</NavLink></li>
-                        <li><a href=""><i className="fa fa-calendar fa-indicator" /> Schedule </a></li>
-                          <li className="dropdown">
+                        <li><NavLink  exact to="/dashboard"><i className="fa fa-bullhorn fa-indicator" /> Speaker</NavLink></li>
+                        <li><NavLink  to="/schedule"><i className="fa fa-calendar fa-indicator" /> Schedule</NavLink></li>
+                        <li className="dropdown disabled">
                                   <a className="dropdown-toggle" data-toggle="dropdown" href=""><i className="fa fa-rss fa-indicator" /> Blog
                                   <span className="caret"></span></a>
                                   <ul className="dropdown-menu">
@@ -134,14 +145,13 @@ export default class App extends Component {
                                     <li><a href="">Blog 1-3</a></li>
                                   </ul>
                                 </li>
-                        <li><a href=""><i className="fa fa-envelope-o fa-indicator" /> Contact <i className="fa fa-address-card fa-indicator" /></a></li>
+                        <li><NavLink  to="/contact"><i className="fa fa-envelope-o fa-indicator" /> Contact</NavLink></li>
                         <li>
                           {this.state.authed
                             ? <a href="/"><i className="fa fa-user fa-indicator" /> Logout </a>
                             : <NavLink  to="/login"><i className="fa fa-user fa-indicator" /> Login</NavLink>
                           }
                         </li>
-
                       </ul>
                     </div>{/*/.nav-collapse */}
                   </div>
@@ -149,8 +159,10 @@ export default class App extends Component {
               </header>
                 <Switch>
                   <Route path='/' exact component={Home} />
-                  <PublicRoute authed={this.state.authed} path='/login' name="login" component={Login} />
-                  <PrivateRoute data="" authed={this.state.authed} path='/dashboard' component={Dashboard} />
+                    <PublicRoute authed={this.state.authed} path='/login' name="login" component={Login} />
+                    <PrivateRoute data="" authed={this.state.authed} path='/dashboard' component={Dashboard} />
+                    <PrivateRoute data="" authed={this.state.authed} path='/schedule' component={Schedule} />
+                    <PrivateRoute data="" authed={this.state.authed} path='/contact' component={contact} />
                   <Route render={() => <h3>No Match</h3>} />
                 </Switch>
                 <Footer/>  
@@ -160,4 +172,10 @@ export default class App extends Component {
     );
   }
 }
-
+// AppContainer.js
+const mapStateToProps = (state, ownProps) => (
+  { geod: state.geod, username : userName }
+  );
+const mapDispatchToProps = {  activateGeod, closeGeod };
+const AppContainer = connect( mapStateToProps,mapDispatchToProps)(App);
+export default AppContainer;  

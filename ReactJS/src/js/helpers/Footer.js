@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
-import 'custom_modules/css/plugins-css.css';
-import 'custom_modules/css/mega-menu/mega_menu.css';
-import 'custom_modules/css/default.css';
-import 'custom_modules/css/style.css';
-import 'custom_modules/css/responsive.css';
-import 'custom_modules/css/custom.css';
-import 'custom_modules/css/font-awesome-4.7.0/css/font-awesome.css';
+import '../../custom_modules/css/plugins-css.css';
+import '../../custom_modules/css/mega-menu/mega_menu.css';
+import '../../custom_modules/css/default.css';
+import '../../custom_modules/css/style.css';
+import '../../custom_modules/css/responsive.css';
+import '../../custom_modules/css/custom.css';
+import '../../custom_modules/css/font-awesome-4.7.0/css/font-awesome.css';
 import 'bootstrap/dist/js/bootstrap.js';
 
 import footerLogo from '../../image/logo.png';
